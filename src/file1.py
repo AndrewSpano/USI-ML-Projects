@@ -1,6 +1,6 @@
 from tensorflow.keras import utils, Sequential, optimizers
 from tensorflow.keras.models import load_model
-from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, AveragePooling2D, Flatten, Dropout
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, AveragePooling2D, Flatten, Dropout, LeakyReLU
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.regularizers import l2
 
@@ -22,9 +22,21 @@ y_test = utils.to_categorical(y_test, n_classes)
 
 # Build model
 model = Sequential()
+
+''' ------ THIS PART IS SUPPOSED TO BE LeakyReLU, but I commented it because I am not sure about it --------
+# model.add(Conv2D(8, (5, 5), strides = (1, 1), input_shape = (32, 32, 3)))
+# model.add(LeakyReLU(alpha = 0.15))
+'''
 model.add(Conv2D(8, (5, 5), strides = (1, 1), activation = 'relu', input_shape = (32, 32, 3)))
+
 model.add(MaxPooling2D(pool_size = (2, 2)))
+
+''' ------ THIS PART IS SUPPOSED TO BE LeakyReLU, but I commented it because I am not sure about it --------
+# model.add(Conv2D(8, (3, 3), strides = (2, 2), input_shape = (32, 32, 3)))
+# model.add(LeakyReLU(alpha = 0.15))
+'''
 model.add(Conv2D(16, (3, 3), strides = (2, 2), activation = 'relu', input_shape = (32, 32, 3)))
+
 model.add(AveragePooling2D(pool_size = (2, 2)))
 model.add(Flatten())
 model.add(Dropout(0.3))
@@ -56,3 +68,4 @@ model.fit(x_train,
 # Evaluate model
 scores = model.evaluate(x_test, y_test)
 print('Test loss: {} - Accuracy: {}'.format(*scores))
+
