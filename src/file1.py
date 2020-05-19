@@ -1,7 +1,8 @@
-from tensorflow.keras.models import load_model
 from tensorflow.keras import utils, Sequential, optimizers
+from tensorflow.keras.models import load_model
 from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, AveragePooling2D, Flatten, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.regularizers import l2
 
 # get the load_data() function
 from utils import load_cifar10
@@ -26,8 +27,10 @@ model.add(MaxPooling2D(pool_size = (2, 2)))
 model.add(Conv2D(16, (3, 3), strides = (2, 2), activation = 'relu', input_shape = (32, 32, 3)))
 model.add(AveragePooling2D(pool_size = (2, 2)))
 model.add(Flatten())
-model.add(Dense(8, activation = 'tanh'))
-model.add(Dense(n_classes, activation = 'softmax'))
+model.add(Dropout(0.3))
+model.add(Dense(8, activation = 'tanh', kernel_regularizer = l2(0.005)))
+model.add(Dropout(0.3))
+model.add(Dense(n_classes, activation = 'softmax', kernel_regularizer = l2(0.005)))
 
 
 # Compile the model
@@ -42,7 +45,7 @@ my_callback = EarlyStopping(monitor = 'val_acc', patience = 10, restore_best_wei
 
 # Train model
 batch_size = 128
-epochs = 30
+epochs = 20
 model.fit(x_train,
           y_train,
           batch_size = batch_size,
