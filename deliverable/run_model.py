@@ -1,4 +1,5 @@
 from tensorflow.keras.models import load_model
+from tensorflow.keras import utils
 
 import sys
 sys.path.insert(1, '../src')
@@ -10,12 +11,17 @@ if __name__ == '__main__':
 
     # Load the test CIFAR-10 data
     (x_train, y_train), (x_test, y_test) = load_cifar10()
-    print(x_train, y_train)
     # ...
 
 
     # Preprocessing
-
+    # Normalize to 0-1 range
+    x_train = x_train / 255.
+    x_test = x_test / 255.
+    # Pre-process targets
+    n_classes = 3
+    y_train = utils.to_categorical(y_train, n_classes)
+    y_test = utils.to_categorical(y_test, n_classes)
     # ...
 
 
