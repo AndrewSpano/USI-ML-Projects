@@ -1,7 +1,6 @@
 from tensorflow.keras.models import save_model, load_model
 from tensorflow.keras.datasets import cifar10
 
-
 def load_cifar10(num_classes=3):
     """
     Downloads CIFAR-10 dataset, which already contains a training and test set,
@@ -13,8 +12,8 @@ def load_cifar10(num_classes=3):
     """
     (x_train_all, y_train_all), (x_test_all, y_test_all) = cifar10.load_data()
 
-    fil_train = tensorflow.where(y_train_all[:, 0]<num_classes)[:, 0]
-    fil_test = tensorflow.where(y_test_all[:, 0]<num_classes)[:, 0]
+    fil_train = y_train_all[:, 0] < num_classes
+    fil_test = y_test_all[:, 0] < num_classes
 
     y_train = y_train_all[fil_train]
     y_test = y_test_all[fil_test]

@@ -1,9 +1,16 @@
 from tensorflow.keras.models import load_model
 
+import sys
+sys.path.insert(1, '../src')
+
+# get the load_data() function
+from utils import load_cifar10
+
 if __name__ == '__main__':
 
     # Load the test CIFAR-10 data
-
+    (x_train, y_train), (x_test, y_test) = load_cifar10()
+    print(x_train, y_train)
     # ...
 
 
@@ -28,7 +35,7 @@ if __name__ == '__main__':
     #for example
     assert y_test.shape == y_pred_task1.shape
     assert y_test.shape == y_pred_task2.shape
-    mce1 = (y_test != y_pred_task1).mean()
-    mce2 = (y_test != y_pred_task2).mean()
-    print("MCE model task 1:", mse1)
-    print("MCE model task 2:", mse2)
+    acc1 = (y_test == y_pred_task1).mean()
+    acc2 = (y_test == y_pred_task2).mean()
+    print("Accuracy model task 1:", acc1)
+    print("Accuracy model task 2:", acc2)
