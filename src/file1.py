@@ -23,19 +23,18 @@ y_test = utils.to_categorical(y_test, n_classes)
 # Build model
 model = Sequential()
 
-''' ------ THIS PART IS SUPPOSED TO BE LeakyReLU, but I commented it because I am not sure about it --------
-# model.add(Conv2D(8, (5, 5), strides = (1, 1), input_shape = (32, 32, 3)))
-# model.add(LeakyReLU(alpha = 0.15))
-'''
+''' ------ THIS PART IS WITH NORMAL ReLU --------
 model.add(Conv2D(8, (5, 5), strides = (1, 1), activation = 'relu', input_shape = (32, 32, 3)))
+'''
+model.add(Conv2D(8, (5, 5), strides = (1, 1), activation = LeakyReLU(alpha = 0.15), input_shape = (32, 32, 3)))
 
 model.add(MaxPooling2D(pool_size = (2, 2)))
 
-''' ------ THIS PART IS SUPPOSED TO BE LeakyReLU, but I commented it because I am not sure about it --------
-# model.add(Conv2D(8, (3, 3), strides = (2, 2), input_shape = (32, 32, 3)))
-# model.add(LeakyReLU(alpha = 0.15))
-'''
+''' ------ THIS PART IS WITH NORMAL ReLU --------
 model.add(Conv2D(16, (3, 3), strides = (2, 2), activation = 'relu', input_shape = (32, 32, 3)))
+'''
+model.add(Conv2D(16, (3, 3), strides = (2, 2), activation = LeakyReLU(alpha = 0.15), input_shape = (32, 32, 3)))
+
 
 model.add(AveragePooling2D(pool_size = (2, 2)))
 model.add(Flatten())
@@ -57,7 +56,7 @@ my_callback = EarlyStopping(monitor = 'val_acc', patience = 10, restore_best_wei
 
 # Train model
 batch_size = 128
-epochs = 20
+epochs = 500
 model.fit(x_train,
           y_train,
           batch_size = batch_size,
