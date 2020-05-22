@@ -1,5 +1,7 @@
 from tensorflow.keras.models import save_model, load_model
 from tensorflow.keras.datasets import cifar10
+# for the plotting
+import matplotlib.pyplot as plt
 
 def load_cifar10(num_classes=3):
     """
@@ -46,3 +48,16 @@ def load_keras_model(filename):
     """
     model = models.load_model(filename)
     return model
+
+def plot_history(history):
+    """
+    Plots two graphs: one for the Train Accuracy of a model and the other for the Validation Accuracy
+    :param history: the result of the model.fit() function call
+    """
+    plt.figure(figsize = (10, 5))
+    plt.plot(history.history['acc'], label = 'Train_Accuracy')
+    plt.plot(history.history['val_acc'], label = 'Val_Accuracy')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
+    plt.legend()
+    plt.show()
