@@ -46,7 +46,7 @@ def load_keras_model(filename):
     :param filename: string, path to the file storing the model.
     :return: the model.
     """
-    model = models.load_model(filename)
+    model = load_model(filename)
     return model
 
 def plot_history(history):

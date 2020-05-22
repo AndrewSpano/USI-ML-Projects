@@ -5,9 +5,11 @@ from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, AveragePooling2
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.regularizers import l2
 
+# For some calculation at the end
+import numpy as np
 
 # Get the load_data() and save_keras_model functions
-from utils import load_cifar10, save_keras_model, plot_history
+from utils import load_cifar10, save_keras_model, load_keras_model, plot_history
 
 
 
@@ -36,12 +38,13 @@ neurons = [8, 64]
 my_callback = EarlyStopping(monitor = 'val_acc', patience = 10, restore_best_weights = True)
 
 
+# For each possible combination
 for learning_rate in learning_rates:
     for neuron_number in neurons:
 
         # Build the model
         neural_networks[(learning_rate, neuron_number)] = Sequential()
-        
+
         ''' # ------ THIS PART IS WITH NORMAL ReLU --------
         neural_networks[(learning_rate, neuron_number)].add(Conv2D(8, (5, 5), strides = (1, 1), activation = 'relu', input_shape = (32, 32, 3)))
         '''
@@ -81,9 +84,9 @@ for learning_rate in learning_rates:
 
         # Compile the model with the according learning rate
         neural_networks[(learning_rate, neuron_number)].compile(optimizer = optimizers.RMSprop(lr = learning_rate),
-                        loss = 'categorical_crossentropy',                   
-                        metrics = ['accuracy'],
-                        )
+                                                                                                loss = 'categorical_crossentropy',                   
+                                                                                                metrics = ['accuracy'],
+                                                                                                )
         neural_networks[(learning_rate, neuron_number)].summary()
 
         # Train the model
@@ -98,11 +101,90 @@ for learning_rate in learning_rates:
 
         # Evaluate the model
         score = neural_networks[(learning_rate, neuron_number)].evaluate(x_test, y_test)
-        # get only the accuracy
+        # Get only the accuracy
         scores[(learning_rate, neuron_number)] = score[1]
         print('Test loss: {} - Accuracy: {}'.format(*score))
 
+# See which configuration (model) gives the highest accuracy
 max_configuration = max(scores, key = scores.get)
-print(max_configuration)
-print(scores[max_configuration])
+# Pick the corresponding model to be the "most promising" one
+best_model = neural_networks[max_configuration]
 
+# Save it
+save_keras_model(best_model, "../deliverable/nn_task2.h5")
+
+# Print some information about it for the 3rd bullet of Task 2
+print("\n\nThe Hyper-parameters which give the \"most promising\" model are (learning_rate, number_of_neurons) = {}".format(max_configuration))
+print("The accuracy of this model is {}".format(scores[max_configuration]))
+
+
+# Now for the 4th bullet we have to compare our best model with the model from Task 1. We start by loading the model from Task 1
+task1_model = load_keras_model("../deliverable/nn_task1.h5")
+
+# Print information about the two models that we are going to compare
+print("\n\nThe summary of the model from Task 1 is:")
+task1_model.summary()
+print("\n\nThe summary of the best model found from the grid search (Task 2) is:")
+best_model.summary()
+
+
+# ---------------------------------------------------------- START COMPARISON ----------------------------------------------------------
+
+# Explain the procedure
+print("\n\n")
+print("Let e_1, e_2 denote denote the Classification Accuracies in the test set of the models from Task 1 and Task 2 respectively")
+print("First we must see if the Null Hypothesis holds: H_0: E[e_1] = E[e_2]")
+print("We reject H_0 if T (formula in the slides \"4_Model_performance\" page 21, on iCorsi) is outside the 95% confidence interval: (-1.96, 1.96)")
+print("If it doesn't hold, then the model with the smaller variable is preferable\n")
+
+
+# Model from Task 1
+
+# Make the prediction
+y1_pred = (task1_model.predict(x_test) > .5).astype(int)
+# Calculate the accuracy for each instance
+e_1 = (y_test == y1_pred).astype(int)
+# Calculate the mean accuracy
+mean_e_1 = e_1.mean()
+# Calculate the variance squared
+s2_1 = mean_e_1 * (1 - mean_e_1)
+
+
+
+# Model from Task 2
+
+# Make the prediction
+y2_pred = (best_model.predict(x_test) > .5).astype(int)
+# Calculate the accuracy for each instance
+e_2 = (y_test == y2_pred).astype(int)
+# Calculate the mean accuracy
+mean_e_2 = e_2.mean()
+# Calculate the variance squared
+s2_2 = mean_e_2 * (1 - mean_e_2)
+
+
+
+
+# Test statistics: T = (mean_e_1 - mean_e_2) / sqrt(s2_1/l + s2_2/l), where l is the number of test_points
+l = len(x_test)
+T = (mean_e_1 - mean_e_2) / np.sqrt(s2_1 / l + s2_2 / l)
+
+
+
+# Print statistics and finish
+print("Task 1 model: Mean: {} -- Variance Squared: {}".format(mean_e_1, s2_1))
+print("Task 2 model: Mean: {} -- Variance Squared: {}".format(mean_e_2, s2_2))
+print("\nT = {}\n".format(T))
+
+# Decide Null Hypothesis
+if T > -1.96 and T < 1.96:
+    print("Null Hypothesis H_0 accepted because: -1.96 < T = {} < 1.96".format(T))
+    print("Therefore, the accuracy levels can be considered as stastically similar\n")
+else:
+    print("Null Hypothesis H_0 rejected because T = {} is not in the 95% confidence interval: (-1.96, 1.96)")
+    print("Therefore, the model with the smallest variance is preferable, which is:\n")
+    if s2_1 < s2_2:
+        print("Model from Task 1")
+    else:
+        print("Model from Task 2")
+    print("And hence, the accuracy levels can be considered as stastically different\n")
