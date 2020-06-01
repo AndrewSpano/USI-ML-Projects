@@ -1,6 +1,7 @@
 # USI Machine Learning Projects
 
-There projects are from the Machine Learning course 2019-2020 of USI, Lugano. Both Projects were mainly developed using the Keras library, and some scikit-learn.
+The projects are from the Machine Learning course 2019-2020 of USI, Lugano.  
+Both Projects were mainly developed using the Keras library, and some scikit-learn.
 
 ## Project 1
 
