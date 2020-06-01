@@ -35,6 +35,8 @@ The project is also composed of 2 Tasks:
 2. Hyper parameter tuning: Perform a grid search on the following parameters  
 * learning rate: {0.0001, 0.01}  
 * number of neurons: {8, 64}  
+
+
 to find the optimal model, and then compare it with the model from Task 1
 
 
