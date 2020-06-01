@@ -94,3 +94,13 @@ def evaluate_predictions(y_true, y_pred):
     assert y_true.shape == y_pred.shape
     return ((y_true - y_pred) ** 2).mean()
 
+
+
+def calculate_variance(y_true, y_pred, e):
+    l = len(y_true)
+    error_sum = 0
+    for i in range(l):
+        e_i = (y_true[i] - y_pred[i]) ** 2
+        error_sum += (e_i - e) ** 2
+
+    return (1./(l - 1)) * error_sum

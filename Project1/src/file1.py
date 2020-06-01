@@ -9,7 +9,7 @@ data_path = '../data/data.npz'
 x, y = load_data(data_path)
 
 # Initialize the regressor
-regressor = LinearRegression(fit_intercept = True)
+linear_regressor = LinearRegression(fit_intercept = True)
 
 # Number of data points
 n = len(x)
@@ -27,15 +27,15 @@ for x1, x2 in x:
 X = np.insert(x, 2, x3, axis = 1)
 
 # Fit the model
-regressor.fit(X, y)
+linear_regressor.fit(X, y)
 
 # Get the parameters
-theta0 = regressor.intercept_
-theta1, theta2, theta3 = regressor.coef_
+theta0 = linear_regressor.intercept_
+theta1, theta2, theta3 = linear_regressor.coef_
 print("\nThe parameter values are: theta0 = {}, theta1 = {}, theta2 = {}, theta3 {}.".format(theta0, theta1, theta2, theta3))
 
 # Make the predictions of the model
-y_pred = regressor.predict(X)
+y_pred = linear_regressor.predict(X)
 
 # Print the prediction
 MSE = evaluate_predictions(y_pred, y)
@@ -43,4 +43,4 @@ print("Task 1 Linear Rregression Model MSE: {}\n".format(MSE))
 
 
 # Save the model
-save_sklearn_model(regressor, '../deliverable/linear_regression.pickle')
+save_sklearn_model(linear_regressor, '../deliverable/Linear_Regression.pickle')
