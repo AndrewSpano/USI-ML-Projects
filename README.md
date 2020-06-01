@@ -1,10 +1,10 @@
 # USI Machine Learning Projects
 
-Both Projects were mainly developed using the Keras library, and some scikit-learn.
+There projects are from the Machine Learning course 2019-2020 of USI, Lugano. Both Projects were mainly developed using the Keras library, and some scikit-learn.
 
 ## Project 1
 
-The first Project in the Machine Learning class of USI 2019-2020 was to solve a regression problem for a given dataset.  
+The first Project is about solving a regression problem for a given dataset.  
 The project is composed of 2 Tasks:
 
 1. Use the family of models f(x, theta) = theta_0 + theta_1 * x_1 + theta_2 * x_2 + theta_3 * sin(x_1) * x_2 to fit the data.
@@ -27,7 +27,7 @@ can be run to just see the accuracies and errors of each model when evaluated to
 
 ## Project 2
 
-The second Project in the Machine Learning class of USI 2019-2020 was to solve a classification problem for the cifar10 image dataset.  
+The second Project is about solving a classification problem for the cifar10 image dataset.  
 The project is also composed of 2 Tasks:
 
 1. Create a Convolutional Neural Network classifier for the problem.
