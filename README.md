@@ -12,15 +12,21 @@ The project is composed of 2 Tasks:
 2. Consider any family of non-linear models of your choice to address the regression problem, and compare them with the model from Task 1.
 
 The code for each individual Task can be found in the src/ directory. To run the script through a terminal, just type the command
-> $ python3 file1.py
+```console
+$ python3 file1.py
+```
 
 
 or  
-> $ python3 file2.py
+```console
+$ python3 file2.py
+```
 
 
 Each script creates a model and saves it in the deliverable/ directory. There, the command  
-> $ python3 run_model.py
+```console
+$ python3 run_model.py
+```
 
 
 can be run to just see the accuracies and errors of each model when evaluated to the test sets.
@@ -39,15 +45,20 @@ The project is also composed of 2 Tasks:
 
 
 The code for each individual Task can be found in the src/ directory. To train the models, run the script through a terminal with the following command:
-> $ python3 file1.py
-
+```console
+$ python3 file1.py
+```
 
 or  
-> $ python3 file2.py
+```console
+$ python3 file2.py
+```
 
 
 Each script creates a model and saves it in the deliverable/ directory. There, the command  
-> $ python3 run_model.py
+```console
+$ python3 run_model.py
+```
 
 
 can be run to just see the comparison (using the T student statistic) of the two models, without having to train them.
