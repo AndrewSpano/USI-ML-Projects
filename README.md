@@ -32,12 +32,10 @@ The second Project is about solving a classification problem for the cifar10 ima
 The project is also composed of 2 Tasks:
 
 1. Create a Convolutional Neural Network classifier for the problem.
-2. Hyper parameter tuning: Perform a grid search on the following parameters  
+2. Hyper parameter tuning: Perform a grid search on the parameters below to find the optimal model, and then compare it with the model from Task 1  
 * learning rate: {0.0001, 0.01}  
-* number of neurons: {8, 64}  
+* number of neurons: {8, 64}
 
-
-to find the optimal model, and then compare it with the model from Task 1
 
 
 The code for each individual Task can be found in the src/ directory. To train the models, run the script through a terminal with the following command:
