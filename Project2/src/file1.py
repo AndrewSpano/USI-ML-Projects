@@ -66,13 +66,13 @@ model.add(Dense(n_classes, activation = 'softmax', kernel_regularizer = l2(0.005
 
 # Compile the model
 model.compile(optimizer = optimizers.RMSprop(lr = 0.003),
-                loss = 'categorical_crossentropy',                   
+                loss = 'categorical_crossentropy',
                 metrics = ['accuracy'],
                 )
 model.summary()
 
 # Implementation of early stopping
-my_callback = EarlyStopping(monitor = 'val_acc', patience = 10, restore_best_weights = True)
+my_callback = EarlyStopping(monitor = 'val_accuracy', patience = 10, restore_best_weights = True)
 
 # Train model
 batch_size = 128

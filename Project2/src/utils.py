@@ -55,8 +55,8 @@ def plot_history(history):
     :param history: the result of the model.fit() function call
     """
     plt.figure(figsize = (10, 5))
-    plt.plot(history.history['acc'], label = 'Train_Accuracy')
-    plt.plot(history.history['val_acc'], label = 'Val_Accuracy')
+    plt.plot(history.history['accuracy'], label = 'Train_Accuracy')
+    plt.plot(history.history['val_accuracy'], label = 'Val_Accuracy')
     plt.ylabel('Accuracy')
     plt.xlabel('Epoch')
     plt.legend()

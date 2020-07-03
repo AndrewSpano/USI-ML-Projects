@@ -11,17 +11,24 @@ import numpy as np
 # Get the load_data() and save_keras_model functions
 from utils import load_cifar10, save_keras_model, load_keras_model, plot_history
 
+# for creating validation set
+from sklearn.model_selection import train_test_split
+
 
 
 # Load the test CIFAR-10 data
 (x_train, y_train), (x_test, y_test) = load_cifar10()
+# split training set to get validation set
+x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size = 0.2, random_state = 146)
 
 # Normalize to 0-1 range
 x_train = x_train / 255.
+x_val = x_val / 255.
 x_test = x_test / 255.
 # Pre-process targets
 n_classes = 3
 y_train = utils.to_categorical(y_train, n_classes)
+y_val = utils.to_categorical(y_val, n_classes)
 y_test = utils.to_categorical(y_test, n_classes)
 
 
@@ -35,7 +42,7 @@ neurons = [8, 64]
 
 
 # Implementation of early stopping
-my_callback = EarlyStopping(monitor = 'val_acc', patience = 10, restore_best_weights = True)
+my_callback = EarlyStopping(monitor = 'val_accuracy', patience = 10, restore_best_weights = True)
 
 
 # For each possible combination
@@ -84,7 +91,7 @@ for learning_rate in learning_rates:
 
         # Compile the model with the according learning rate
         neural_networks[(learning_rate, neuron_number)].compile(optimizer = optimizers.RMSprop(lr = learning_rate),
-                                                                                                loss = 'categorical_crossentropy',                   
+                                                                                                loss = 'categorical_crossentropy',
                                                                                                 metrics = ['accuracy'],
                                                                                                 )
         neural_networks[(learning_rate, neuron_number)].summary()
@@ -97,13 +104,14 @@ for learning_rate in learning_rates:
                                                                         batch_size = batch_size,
                                                                         epochs = epochs,
                                                                         callbacks = [my_callback],
-                                                                        validation_split = 0.2)
+                                                                        validation_data = (x_val, y_val))
 
         # Evaluate the model
-        score = neural_networks[(learning_rate, neuron_number)].evaluate(x_test, y_test)
+        score = neural_networks[(learning_rate, neuron_number)].evaluate(x_val, y_val)
         # Get only the accuracy
         scores[(learning_rate, neuron_number)] = score[1]
-        print('Test loss: {} - Accuracy: {}'.format(*score))
+        print('Validation loss: {} - Accuracy: {}'.format(*score))
+
 
 # See which configuration (model) gives the highest accuracy
 max_configuration = max(scores, key = scores.get)
@@ -135,15 +143,15 @@ print("\n\n")
 print("Let e_1, e_2 denote denote the Classification Accuracies in the test set of the models from Task 1 and Task 2 respectively")
 print("First we must see if the Null Hypothesis holds: H_0: E[e_1] = E[e_2]")
 print("We reject H_0 if T (formula in the slides \"4_Model_performance\" page 21, on iCorsi) is outside the 95% confidence interval: (-1.96, 1.96)")
-print("If it doesn't hold, then the model with the smaller variable is preferable\n")
+print("If it doesn't hold, then the model with the highest accuracy is preferable\n")
 
 
 # Model from Task 1
 
 # Make the prediction
-y1_pred = (task1_model.predict(x_test) > .5).astype(int)
+y1_pred = np.argmax(task1_model.predict(x_test), 1)
 # Calculate the accuracy for each instance
-e_1 = (y_test == y1_pred).astype(int)
+e_1 = (np.argmax(y_test, 1) == y1_pred).astype(int)
 # Calculate the mean accuracy
 mean_e_1 = e_1.mean()
 # Calculate the variance squared
@@ -154,9 +162,9 @@ s2_1 = mean_e_1 * (1 - mean_e_1)
 # Model from Task 2
 
 # Make the prediction
-y2_pred = (best_model.predict(x_test) > .5).astype(int)
+y2_pred = np.argmax(best_model.predict(x_test), 1)
 # Calculate the accuracy for each instance
-e_2 = (y_test == y2_pred).astype(int)
+e_2 = (np.argmax(y_test, 1) == y2_pred).astype(int)
 # Calculate the mean accuracy
 mean_e_2 = e_2.mean()
 # Calculate the variance squared
@@ -182,8 +190,8 @@ if T > -1.96 and T < 1.96:
     print("Therefore, the accuracy levels can be considered as stastically similar\n")
 else:
     print("Null Hypothesis H_0 rejected because T = {} is not in the 95% confidence interval: (-1.96, 1.96)")
-    print("Therefore, the model with the smallest variance is preferable, which is:\n")
-    if s2_1 < s2_2:
+    print("Therefore, the model with the highest accuracy is preferable, which is:\n")
+    if mean_e_1 > mean_e_2:
         print("Model from Task 1")
     else:
         print("Model from Task 2")
