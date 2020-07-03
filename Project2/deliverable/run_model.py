@@ -18,7 +18,6 @@ if __name__ == '__main__':
 
     # Load the test CIFAR-10 data
     (x_train, y_train), (x_test, y_test) = load_cifar10()
-    # ...
 
 
     # Preprocessing
@@ -52,15 +51,15 @@ if __name__ == '__main__':
     print("Let e_1, e_2 denote denote the Classification Accuracies in the test set of the models from Task 1 and Task 2 respectively")
     print("First we must see if the Null Hypothesis holds: H_0: E[e_1] = E[e_2]")
     print("We reject H_0 if T (formula in the slides \"4_Model_performance\" page 21, on iCorsi) is outside the 95% confidence interval: (-1.96, 1.96)")
-    print("If it doesn't hold, then the model with the smaller variable is preferable\n")
+    print("If it doesn't hold, then the model with the highest accuracy is preferable\n")
 
 
     # Model from Task 1
 
     # Make the prediction
-    y1_pred = (model_task1.predict(x_test) > .5).astype(int)
+    y1_pred = np.argmax(model_task1.predict(x_test), 1)
     # Calculate the accuracy for each instance
-    e_1 = (y_test == y1_pred).astype(int)
+    e_1 = (np.argmax(y_test, 1) == y1_pred).astype(int)
     # Calculate the mean accuracy
     mean_e_1 = e_1.mean()
     # Calculate the variance squared
@@ -71,9 +70,9 @@ if __name__ == '__main__':
     # Model from Task 2
 
     # Make the prediction
-    y2_pred = (model_task2.predict(x_test) > .5).astype(int)
+    y2_pred = np.argmax(model_task2.predict(x_test), 1)
     # Calculate the accuracy for each instance
-    e_2 = (y_test == y2_pred).astype(int)
+    e_2 = (np.argmax(y_test, 1) == y2_pred).astype(int)
     # Calculate the mean accuracy
     mean_e_2 = e_2.mean()
     # Calculate the variance squared
@@ -99,8 +98,8 @@ if __name__ == '__main__':
         print("Therefore, the accuracy levels can be considered as stastically similar\n")
     else:
         print("Null Hypothesis H_0 rejected because T = {} is not in the 95% confidence interval: (-1.96, 1.96)")
-        print("Therefore, the model with the smallest variance is preferable, which is:\n")
-        if s2_1 < s2_2:
+        print("Therefore, the model with the highest accuracy is preferable, which is:\n")
+        if mean_e_1 > mean_e_2:
             print("Model from Task 1")
         else:
             print("Model from Task 2")
